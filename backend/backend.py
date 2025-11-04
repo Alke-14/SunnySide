@@ -42,7 +42,7 @@ def get_weather(city: str):
         raise HTTPException(status_code=404, detail="City not found")
 
 @app.api_route("/{full_path:path}", methods=["GET", "HEAD"])
-async def serve_react(full_path: str, request: Request):
+async def serve_react(full_path: str, request: requests):
     index_path = os.path.join(static_dir, "index.html")
     if os.path.exists(index_path):
         return FileResponse(index_path)
