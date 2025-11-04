@@ -10,6 +10,14 @@ app = FastAPI()
 
 static_dir = os.path.join(os.path.dirname(__file__), '../dist')
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173", "https://sunnyside-91z4.onrender.com"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 app.mount("/assets", StaticFiles(directory=os.path.join(static_dir, "assets")), name="assets")
 
 API_KEY = "2310e340b45dfe6b4d8745df476e365f"
