@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import axios from "axios";
 import {
   InputGroup,
@@ -7,10 +7,10 @@ import {
   InputGroupInput,
   InputGroupText,
   InputGroupTextarea,
-} from "@/components/ui/input-group"
-import { IconPlus } from "@tabler/icons-react"
-import { ArrowUpIcon, AppWindowIcon, CodeIcon } from "lucide-react"
-import { Separator } from "@/components/ui/separator"
+} from "@/components/ui/input-group";
+import { IconPlus } from "@tabler/icons-react";
+import { ArrowUpIcon, AppWindowIcon, CodeIcon } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
 import {
   Card,
   CardContent,
@@ -18,12 +18,11 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Button } from "@/components/ui/button"
-
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Button } from "@/components/ui/button";
 
 function App() {
   const [city, setCity] = useState("");
@@ -32,12 +31,44 @@ function App() {
   const [aiError, setAiError] = useState("");
   const [error, setError] = useState("");
 
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
   const getWeather = async () => {
     try {
-      // axios handles the GET request to send to the FastAPI backend using the deployed URL from Render
-      const response = await axios.get(`https://sunnyside-91z4.onrender.com/weather?city=${city}`);
-      setWeather(response.data.weather);
+      // 1. Get weather data
+      const response = await axios.get(
+        `https://sunnyside-91z4.onrender.com/weather?city=${city}`
+      );
+
+      const weatherText = response.data.weather;
+      setWeather(weatherText);
       setError("");
+
+      // --- 2. Stream Audio (The New Way) ---
+
+      // Stop any audio that is currently playing
+      if (audioRef.current) {
+        audioRef.current.pause();
+      }
+
+      // Encode the text to make it safe to use in a URL
+      const encodedText = encodeURIComponent(weatherText);
+
+      // Point the Audio object directly at your streaming endpoint
+      // (Using localhost:8000 as in your example)
+      const audioStreamUrl = `http://localhost:8000/stream-audio?text=${encodedText}`;
+
+      const audio = new Audio(audioStreamUrl);
+      audioRef.current = audio; // Store it in the ref
+
+      // Optional: Add error handling for audio
+      audio.onerror = () => {
+        console.error("Audio playback error.");
+        // You could set a different error state here
+      };
+
+      // 3. Play the audio
+      audio.play();
     } catch (err) {
       setError("City not found or server error");
       setWeather("");
@@ -55,8 +86,11 @@ function App() {
           <Card className="p-5 h-fit">
             <CardHeader>
               <CardTitle>SunnySide</CardTitle>
-              <CardDescription>This is a simple weather app which retrieves data from an API called <b>OpenWeather</b> along with the use of <b>FastAPI</b> to easily connect the Python backend with the frontend</CardDescription>
-              
+              <CardDescription>
+                This is a simple weather app which retrieves data from an API
+                called <b>OpenWeather</b> along with the use of <b>FastAPI</b>{" "}
+                to easily connect the Python backend with the frontend
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <Input
@@ -68,7 +102,10 @@ function App() {
               />
               <Button onClick={getWeather}>Get Weather</Button>
 
-              <div className="border-4 rounded-sm p-2.5" style={{ marginTop: "20px", whiteSpace: "pre-wrap" }}>
+              <div
+                className="border-4 rounded-sm p-2.5"
+                style={{ marginTop: "20px", whiteSpace: "pre-wrap" }}
+              >
                 {weather && <p>{weather}</p>}
                 {error && <p style={{ color: "red" }}>{error}</p>}
               </div>
@@ -81,7 +118,10 @@ function App() {
         <TabsContent value="assistant">
           <Card className="p-5">
             <InputGroup>
-              <InputGroupTextarea className="" placeholder="Ask, Search or Chat..."/>
+              <InputGroupTextarea
+                className=""
+                placeholder="Ask, Search or Chat..."
+              />
               <InputGroupAddon align="block-end">
                 <InputGroupButton
                   variant="outline"
@@ -90,7 +130,7 @@ function App() {
                 >
                   <IconPlus />
                 </InputGroupButton>
-                
+
                 <InputGroupText className="ml-auto"></InputGroupText>
                 <Separator orientation="vertical" className="!h-4" />
                 <InputGroupButton
@@ -104,11 +144,9 @@ function App() {
                 </InputGroupButton>
               </InputGroupAddon>
             </InputGroup>
-          </Card>  
+          </Card>
         </TabsContent>
       </Tabs>
-      
-          
     </div>
   );
 }
