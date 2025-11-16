@@ -41,7 +41,7 @@ app.add_middleware(
     CORSMiddleware,
     # these are the origins used in development and production, it escapes CORS error handler;
     # otherwise, any requests we do through the field will be blocked and logged in the console from the browser (I found out the hard way :( )
-    allow_origins=["http://localhost:5173", "https://sunnyside-91z4.onrender.com"],
+    allow_origins=["http://localhost:5173", "http://localhost:8000" "https://sunnyside-91z4.onrender.com"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -90,15 +90,19 @@ def get_brainrot(weather: str):
     client = genai.Client()
 
     response = client.models.generate_content(
-    model="gemini-2.5-flash", contents=f"You are a brainrot gen-z weatherman. Give some brief details about the weather today using brainrot/tiktok terms like cooked, chopped, bombaclot and more. Don't use emojis or format with Markdown: {weather}", config=types.GenerateContentConfig(
-        thinking_config=types.ThinkingConfig(thinking_budget=0) # Disables thinking
-    )
+        model="gemini-2.5-flash",
+        contents=f"You are a brainrot gen-z weatherman. Tell abt the city's weather today using brainrot/tiktok terms like cooked, chopped, bombaclot and more. Don't use emojis or format with Markdown: {weather}",
+        config=types.GenerateContentConfig(
+            thinking_config=types.ThinkingConfig(thinking_budget=0),  # Disables thinking
+            max_output_tokens=300,
+        )
     )
     print(response.text)
     return response.text
 
 @app.get("/stream-audio")
 async def get_tts_stream(weather: str = ""):
+    print("input", weather)
     """
     This endpoint generates audio from a fixed text string and streams it back
     as an 'audio/mpeg' response.
@@ -108,10 +112,7 @@ async def get_tts_stream(weather: str = ""):
     client = ElevenLabs(
     api_key=ELEVENLABS_API_KEY,
 )
-    
-    # 1. Define the text to be spoken
-    text_to_speak = "man dis app and api is straight buns."
-    
+        
     # 2. Define voice settings (optional, but good for consistency)
     # You can get voice IDs from your ElevenLabs account
     voice_id = "pNInz6obpgDQGcFmaJgB" # A popular default voice
@@ -122,7 +123,7 @@ async def get_tts_stream(weather: str = ""):
         output_format="mp3_22050_32",
         text=get_brainrot(weather),
         voice_id=voice_id,
-        model_id="eleven_multilingual_v2", # Use model_id as per new client
+        model_id="eleven_flash_v2_5", # Use model_id as per new client
         voice_settings=VoiceSettings(stability=0.5, similarity_boost=0.75)
     )
     
