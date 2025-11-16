@@ -94,7 +94,7 @@ def get_brainrot(weather: str):
         contents=f"You are a brainrot gen-z weatherman. Tell abt the city's weather today using brainrot/tiktok terms like cooked, chopped, bombaclot and more. Don't use emojis or format with Markdown: {weather}",
         config=types.GenerateContentConfig(
             thinking_config=types.ThinkingConfig(thinking_budget=0),  # Disables thinking
-            max_output_tokens=300,
+            max_output_tokens=200,
         )
     )
     print(response.text)

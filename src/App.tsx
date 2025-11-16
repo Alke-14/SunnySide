@@ -23,6 +23,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
+import Weather from "./Weather";
 
 function App() {
   const [city, setCity] = useState("");
@@ -131,7 +132,7 @@ function App() {
       const audioStreamUrl = `http://localhost:8000/stream-audio?weather=${encodedText}`;
 
       const audio = new Audio();
-      audio.crossOrigin = "anonymous";  
+      audio.crossOrigin = "anonymous";
       audio.src = audioStreamUrl;
       audioRef.current = audio; // Store it in the ref
 
@@ -156,80 +157,55 @@ function App() {
   }, [isAudioPlaying]);
 
   return (
-    <div className="bg-[#E6D5AD] flex justify-center">
-      <Tabs defaultValue="city" className="h-screen w-[500px] justify-center ">
-        <TabsList>
+    <div className="bg-[#E6D5AD] flex justify-center h-screen w-full">
+      <div className="flex justify-evenly container gap-8 flex-wrap">
+        <Card className="p-5 h-fit flex-1 my-auto">
+          <CardHeader>
+            <CardTitle>SunnySide</CardTitle>
+            <CardDescription>
+              This is a simple weather app which retrieves data from an API
+              called <b>OpenWeather</b> along with the use of <b>FastAPI</b> to
+              easily connect the Python backend with the frontend
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Input
+              type="text"
+              placeholder="Enter City"
+              value={city}
+              onChange={(e) => setCity(e.target.value)}
+              className="mb-2"
+            />
+            <Button onClick={getWeather}>Get Weather</Button>
+
+            <div
+              className="border-4 rounded-sm p-2.5"
+              style={{ marginTop: "20px", whiteSpace: "pre-wrap" }}
+            >
+              {weather && <p>{weather}</p>}
+              {error && <p style={{ color: "red" }}>{error}</p>}
+            </div>
+          </CardContent>
+          <CardFooter>
+            &copy; 2025 Tutor Me Inc. All rights reserved.
+          </CardFooter>
+        </Card>
+        <div className="weatherman flex-2 w-full h-full bg-amber-500">
+          {""}
+          <Weather weather={weather} isAudioPlaying={isAudioPlaying} />
+        </div>
+      </div>
+      {/* <Tabs defaultValue="city" className="h-screen w-[500px] justify-center "> */}
+      {/* <TabsList>
           <TabsTrigger value="city">Find a City</TabsTrigger>
           <TabsTrigger value="assistant">Ask AI Assistant</TabsTrigger>
-        </TabsList>
-        <TabsContent value="city">
-          <Card className="p-5 h-fit">
-            <CardHeader>
-              <CardTitle>SunnySide</CardTitle>
-              {isAudioPlaying && (
-                <CardDescription>Audio is playing...</CardDescription>
-              )}
-              <CardDescription>
-                This is a simple weather app which retrieves data from an API
-                called <b>OpenWeather</b> along with the use of <b>FastAPI</b>{" "}
-                to easily connect the Python backend with the frontend
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Input
-                type="text"
-                placeholder="Enter City"
-                value={city}
-                onChange={(e) => setCity(e.target.value)}
-                className="mb-2"
-              />
-              <Button onClick={getWeather}>Get Weather</Button>
+        </TabsList> */}
+      {/* <TabsContent value="city"> */}
 
-              <div
-                className="border-4 rounded-sm p-2.5"
-                style={{ marginTop: "20px", whiteSpace: "pre-wrap" }}
-              >
-                {weather && <p>{weather}</p>}
-                {error && <p style={{ color: "red" }}>{error}</p>}
-              </div>
-            </CardContent>
-            <CardFooter>
-              &copy; 2025 Tutor Me Inc. All rights reserved.
-            </CardFooter>
-          </Card>
-        </TabsContent>
-        <TabsContent value="assistant">
-          <Card className="p-5">
-            <InputGroup>
-              <InputGroupTextarea
-                className=""
-                placeholder="Ask, Search or Chat..."
-              />
-              <InputGroupAddon align="block-end">
-                <InputGroupButton
-                  variant="outline"
-                  className="rounded-full"
-                  size="icon-xs"
-                >
-                  <IconPlus />
-                </InputGroupButton>
-
-                <InputGroupText className="ml-auto"></InputGroupText>
-                <Separator orientation="vertical" className="!h-4" />
-                <InputGroupButton
-                  variant="default"
-                  className="rounded-full"
-                  size="icon-xs"
-                  disabled
-                >
-                  <ArrowUpIcon />
-                  <span className="sr-only">Send</span>
-                </InputGroupButton>
-              </InputGroupAddon>
-            </InputGroup>
-          </Card>
-        </TabsContent>
-      </Tabs>
+      {/* </TabsContent> */}
+      {/* <TabsContent value="assistant"> */}
+      {/* </TabsContent> */}
+      {/* </Tabs> */}
     </div>
   );
 }
