@@ -157,9 +157,9 @@ function App() {
   }, [isAudioPlaying]);
 
   return (
-    <div className="bg-[#E6D5AD] flex justify-center h-screen w-full">
+    <div className="bg-neutral-800 flex justify-center h-screen w-full">
       <div className="flex justify-evenly container gap-8 flex-wrap">
-        <Card className="p-5 h-fit flex-1 my-auto">
+        <Card className="dark p-5 h-fit flex-1 my-auto">
           <CardHeader>
             <CardTitle>SunnySide</CardTitle>
             <CardDescription>
@@ -190,7 +190,7 @@ function App() {
             &copy; 2025 Tutor Me Inc. All rights reserved.
           </CardFooter>
         </Card>
-        <div className="weatherman flex-2 w-full h-full bg-amber-500">
+        <div className="weatherman flex-2 w-full h-full">
           {""}
           <Weather weather={weather} isAudioPlaying={isAudioPlaying} />
         </div>
