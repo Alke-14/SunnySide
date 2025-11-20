@@ -8,10 +8,22 @@ import drizzle from "@/assets/drizzle.jpeg";
 import other from "@/assets/other.webp";
 import talking from "@/assets/amongla-talking.gif";
 import still from "@/assets/amongla-still.gif";
+import frame from "@/assets/frame.svg";
 
-function Weather({ weather, isAudioPlaying }: { weather: string; isAudioPlaying: boolean }) {
+function Weather({
+  weather,
+  isAudioPlaying,
+}: {
+  weather: string;
+  isAudioPlaying: boolean;
+}) {
   return (
-    <div className="relative w-full h-full">
+    <div className="relative w-fit h-full ">
+      <img
+        src={frame}
+        alt="Frame"
+        className="top-0 left-[50%] w-full h-full object-fill z-5 relative overflow-hidden rounded-4xl"
+      />
       <img
         src={
           weather.toLowerCase().includes("clear")
@@ -24,17 +36,18 @@ function Weather({ weather, isAudioPlaying }: { weather: string; isAudioPlaying:
             ? snow
             : weather.toLowerCase().includes("thunderstorm")
             ? thunderstorm
-            : weather.toLowerCase().includes("drizzle")
+            : weather.toLowerCase().includes("drizzle") ||
+              weather.toLowerCase().includes("mist")
             ? drizzle
             : other
         }
         alt="Weather condition"
-        className="absolute top-0 left-0 w-full  h-full object-fill z-[1]"
+        className="absolute top-0 left-[50%] w-full rounded-[5rem] h-full object-fill"
       />
       <img
         src={isAudioPlaying ? talking : still}
         alt="Weatherman"
-        className="absolute bottom-0 right-0 w-[200px] h-[200px] z-[2]"
+        className="absolute bottom-0 left-[75%] w-[200px] h-[200px]"
       />
     </div>
   );
