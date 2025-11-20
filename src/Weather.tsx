@@ -36,7 +36,8 @@ function Weather({
             ? snow
             : weather.toLowerCase().includes("thunderstorm")
             ? thunderstorm
-            : weather.toLowerCase().includes("drizzle")
+            : weather.toLowerCase().includes("drizzle") ||
+              weather.toLowerCase().includes("mist")
             ? drizzle
             : other
         }
